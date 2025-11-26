@@ -10,9 +10,10 @@
     <style>
         /* --- Full original styles (kept) --- */
         .exam-shell {
-            max-width: 1280px;
-            margin: 2rem auto;
-            padding: 0 1rem 2rem;
+            max-width: none;
+            width: 100%;
+            margin: 0;
+            padding: 1.5rem 1.75rem 6rem;
             font-family: inherit;
         }
 
@@ -63,10 +64,11 @@
         }
 
         .exam-body {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            align-items: flex-start;
+            display: grid;
+            grid-template-columns: minmax(420px, 1fr) minmax(560px, 1.15fr);
+            gap: 1.25rem;
+            align-items: stretch;
+            min-height: calc(100vh - 220px);
         }
 
         .exam-document,
@@ -77,15 +79,19 @@
         }
 
         .exam-document {
-            flex: 1 1 420px;
+            position: sticky;
+            top: 1rem;
+            align-self: start;
             min-width: 320px;
             overflow: hidden;
+            height: calc(100vh - 220px);
         }
 
         .exam-document iframe,
         .exam-document object {
             width: 100%;
-            height: 82vh;
+            height: 100%;
+            min-height: 540px;
             border: none;
         }
 
@@ -140,66 +146,122 @@
         }
 
         .exam-sheet {
-            flex: 1 1 520px;
             min-width: 320px;
-            padding: 1.75rem 2rem;
+            padding: 1.75rem 2rem 2rem;
+            min-height: calc(100vh - 220px);
         }
 
-        .question-summary-panel {
-            margin-bottom: 1.5rem;
-            padding: 1.25rem 1.5rem;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            position: sticky;
-            top: 1rem;
-            z-index: 2;
-        }
-
-        .question-summary-title {
-            margin: 0 0 1rem;
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #1f2937;
-        }
-
-        .question-summary-section + .question-summary-section {
-            margin-top: 1rem;
-        }
-
-        .question-summary-section h3 {
-            margin: 0 0 0.65rem;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #475569;
-        }
-
-        .question-summary-grid {
+        .question-rail {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1040;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
-            gap: 0.45rem;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.65rem 1rem;
+            background: rgba(15, 23, 42, 0.92);
+            color: #e2e8f0;
+            box-shadow: 0 -8px 28px -14px rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(4px);
         }
 
-        .question-summary-item {
+        .question-rail .rail-label {
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+        }
+
+        .question-rail .rail-track {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            overflow-x: auto;
+            padding: 0.2rem 0.35rem;
+            scrollbar-width: thin;
+        }
+
+        .question-rail .rail-track::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .question-rail .rail-track::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 999px;
+        }
+
+        .rail-item {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 42px;
-            border-radius: 10px;
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
             font-weight: 700;
+            font-size: 0.9rem;
             text-decoration: none;
-            font-size: 0.95rem;
-            color: #1e293b;
+            color: #0f172a;
             background: #e2e8f0;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            flex: 0 0 auto;
+            border: 2px solid transparent;
         }
 
-        .question-summary-item:hover,
-        .question-summary-item:focus-visible {
+        .rail-item:hover,
+        .rail-item:focus-visible {
             transform: translateY(-1px);
-            box-shadow: rgba(15, 23, 42, 0.18) 0 8px 18px -8px;
+            box-shadow: rgba(226, 232, 240, 0.3) 0 6px 14px -6px;
             text-decoration: none;
+        }
+
+        .rail-legend {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .rail-legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            color: #cbd5f5;
+        }
+
+        .rail-legend span::before {
+            content: "";
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            background: currentColor;
+            opacity: 0.6;
+        }
+
+        .rail-legend .legend-unanswered {
+            color: #94a3b8;
+        }
+
+        .rail-legend .legend-answered {
+            color: #60a5fa;
+        }
+
+        .rail-legend .legend-correct {
+            color: #34d399;
+        }
+
+        .rail-legend .legend-incorrect {
+            color: #f87171;
+        }
+
+        .rail-legend .legend-partial {
+            color: #f59e0b;
         }
 
         .question-status-unanswered {
@@ -225,55 +287,6 @@
         .question-status-partial {
             background: #fcd34d;
             color: #92400e;
-        }
-
-        .question-summary-legend {
-            margin-top: 1.2rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-            color: #475569;
-        }
-
-        .question-summary-legend span {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
-
-        .question-summary-legend span::before {
-            content: "";
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            background: currentColor;
-            opacity: 0.35;
-        }
-
-        .question-summary-legend .legend-unanswered::before {
-            background: #94a3b8;
-            opacity: 0.4;
-        }
-
-        .question-summary-legend .legend-answered::before {
-            background: #60a5fa;
-            opacity: 0.6;
-        }
-
-        .question-summary-legend .legend-correct::before {
-            background: #34d399;
-            opacity: 0.9;
-        }
-
-        .question-summary-legend .legend-incorrect::before {
-            background: #f87171;
-            opacity: 0.9;
-        }
-
-        .question-summary-legend .legend-partial::before {
-            background: #f59e0b;
-            opacity: 0.9;
         }
 
         .question-feedback {
@@ -715,12 +728,14 @@
             position: relative;
             width: 100%;
             min-height: 160px;
+            height: 100%;
         }
 
         .pdf-object {
             display: none; /* object will be used as fallback if iframe fails */
             width: 100%;
-            height: 82vh;
+            height: 100%;
+            min-height: 540px;
         }
 
         .pdf-fallback {
@@ -1027,36 +1042,6 @@
         </div>
 
         <div class="exam-sheet">
-            <div class="question-summary-panel">
-                <div class="question-summary-title">{{ _('Question list') }}</div>
-                {% for section in question_overview %}
-                    {% if section.entries %}
-                        <div class="question-summary-section">
-                            <h3>{{ section.title }}</h3>
-                            <div class="question-summary-grid">
-                                {% for item in section.entries %}
-                                    <a href="{{ item.url }}"
-                                       class="question-summary-item question-status-{{ item.status }}"
-                                       title="{{ item.tooltip }}">
-                                        {{ item.label }}
-                                    </a>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-                <div class="question-summary-legend">
-                    {% if show_exam_results %}
-                        <span class="legend-correct">{{ _('Correct') }}</span>
-                        <span class="legend-incorrect">{{ _('Incorrect') }}</span>
-                        <span class="legend-partial">{{ _('Partially correct') }}</span>
-                        <span class="legend-unanswered">{{ _('No answer') }}</span>
-                    {% else %}
-                        <span class="legend-answered">{{ _('Answered') }}</span>
-                        <span class="legend-unanswered">{{ _('No answer') }}</span>
-                    {% endif %}
-                </div>
-            </div>
             <form method="post" id="exam-form">
                 {% csrf_token %}
                 {{ form.non_field_errors|safe }}
@@ -1192,6 +1177,34 @@
         </div>
     </div>
 </div>
+
+{% if question_overview %}
+    <div class="question-rail" aria-label="{{ _('Question navigation') }}">
+        <div class="rail-label">{{ _('Questions') }}</div>
+        <div class="rail-track">
+            {% for section in question_overview %}
+                {% for item in section.entries %}
+                    <a href="{{ item.url }}"
+                       class="rail-item question-status-{{ item.status }}"
+                       title="{{ item.tooltip }}">
+                        {{ item.label }}
+                    </a>
+                {% endfor %}
+            {% endfor %}
+        </div>
+        <div class="rail-legend">
+            {% if show_exam_results %}
+                <span class="legend-correct">{{ _('Correct') }}</span>
+                <span class="legend-incorrect">{{ _('Incorrect') }}</span>
+                <span class="legend-partial">{{ _('Partially correct') }}</span>
+                <span class="legend-unanswered">{{ _('No answer') }}</span>
+            {% else %}
+                <span class="legend-answered">{{ _('Answered') }}</span>
+                <span class="legend-unanswered">{{ _('No answer') }}</span>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
 
 <div id="fullscreen-overlay" class="fullscreen-overlay">
     <h2>{{ _('Full-screen mode required') }}</h2>
