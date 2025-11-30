@@ -281,9 +281,25 @@ class ContestMixin(object):
                 context["has_joined"] = False
             else:
                 context["has_joined"] = True
+
+            context["exam_participation"] = (
+                ContestParticipation.objects.filter(
+                    contest=self.object,
+                    user=self.request.profile,
+                    virtual__in=[
+                        ContestParticipation.LIVE,
+                        ContestParticipation.SPECTATE,
+                    ],
+                )
+                .order_by("virtual")
+                .first()
+            )
+            context["has_exam_participation"] = context["exam_participation"] is not None
         else:
             context["live_participation"] = None
             context["has_joined"] = False
+            context["exam_participation"] = None
+            context["has_exam_participation"] = False
 
         context["now"] = timezone.now()
         context["is_editor"] = self.is_editor
