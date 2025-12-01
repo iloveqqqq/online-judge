@@ -117,7 +117,7 @@
         </form>
     {% endif %}
 
-    {% if contest.format_name == 'thptqg' and contest.exam_papers.exists() and contest.is_in_contest(request.user) %}
+    {% if contest.format_name == 'thptqg' and contest.exam_papers.exists() and (contest.is_in_contest(request.user) or (contest.ended and has_exam_participation)) %}
         <div class="contest-exam-launch">
             <a class="button btn-midnightblue contest-exam-launch-button" href="{{ url('contest_exam', contest.key) }}">
                 {{ _('Go to exam interface') }}
