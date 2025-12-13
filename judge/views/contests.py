@@ -93,6 +93,7 @@ __all__ = [
     "ContestList",
     "ContestDetail",
     "ContestRanking",
+    "ContestICPCScoreboard",
     "ContestJoin",
     "ContestLeave",
     "ContestCalendar",
@@ -1184,6 +1185,60 @@ class ContestRanking(ContestRankingBase):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["has_rating"] = self.object.ratings.exists()
+        return context
+
+
+class ContestICPCScoreboard(ContestMixin, TitleMixin, DetailView):
+    template_name = "contest/icpc-scoreboard.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.is_public_view = (
+            self.object.icpc_public_scoreboard and self.object.show_scoreboard
+        )
+        self.has_full_access = self.object.can_see_full_scoreboard(request.user)
+
+        if self.object.format_name != "icpc":
+            raise Http404()
+        if not (self.is_public_view or self.has_full_access):
+            raise Http404()
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_title(self):
+        return _("%s ICPC Scoreboard") % self.object.name
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page_type"] = "icpc_scoreboard"
+        context["is_public_view"] = self.is_public_view
+        context["has_full_access"] = self.has_full_access
+
+        if not (self.object.show_scoreboard or self.has_full_access):
+            context["scoreboard_hidden"] = True
+            context["rows"] = []
+            context["problems"] = []
+            return context
+
+        users, problems = get_contest_ranking_list(self.request, self.object)
+        rows = []
+
+        for rank, profile in users:
+            full_name = profile.user.get_full_name().strip()
+            display_name = full_name if full_name else profile.username
+            rows.append(
+                {
+                    "rank": rank,
+                    "display_name": display_name,
+                    "username": profile.username,
+                    "organization": profile.organization,
+                    "problem_cells": profile.problem_cells,
+                    "result": profile.result_cell,
+                }
+            )
+
+        context["rows"] = rows
+        context["problems"] = problems
         return context
 
 

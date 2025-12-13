@@ -161,6 +161,7 @@ class ContestAdmin(CompareVersionAdmin):
                     "use_clarifications",
                     "hide_problem_tags",
                     "scoreboard_visibility",
+                    "icpc_public_scoreboard",
                     "run_pretests_only",
                     "points_precision",
                 )

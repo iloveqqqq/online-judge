@@ -11,6 +11,7 @@
 - Hệ thống bảng xếp hạng thời gian thực, event trực tiếp bằng WebSocket và newsletter tương tác với thí sinh.
 - Contest format **Codeforces** tái hiện đầy đủ luật tính điểm chính thức (dynamic scoring, penalty, freeze) cho kỳ thi lập trình đối kháng.
 - Nguồn dữ liệu tương thích **ICPC Resolver**, tự động đồng bộ contest dạng ICPC qua bộ API `/icpc/…` và feed sự kiện NDJSON.
+- Bảng xếp hạng **ICPC** có thể bật chế độ public riêng (ngoài toggle scoreboard chung) để chia sẻ kết quả cho khán giả theo link `/contest/<contest-key>/icpc-scoreboard/`.
 
 ### Thể thức trắc nghiệm THPTQG 2025
 - Contest format **THPTQG Exam** chấm điểm theo thang 0–10 dựa trên tổng điểm tối đa của từng phần và hiển thị chi tiết số điểm/ý đúng trên bảng xếp hạng.

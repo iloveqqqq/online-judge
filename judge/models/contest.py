@@ -150,6 +150,14 @@ class Contest(models.Model):
         help_text=_("Whether this contest can be rated."),
         default=False,
     )
+    icpc_public_scoreboard = models.BooleanField(
+        verbose_name=_("public ICPC scoreboard"),
+        default=False,
+        help_text=_(
+            "Allow the ICPC-specific scoreboard page to be accessed publicly "
+            "once the scoreboard itself is visible."
+        ),
+    )
     scoreboard_visibility = models.CharField(
         verbose_name=_("scoreboard visibility"),
         default=SCOREBOARD_VISIBLE,
