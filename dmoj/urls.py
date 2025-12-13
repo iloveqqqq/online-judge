@@ -525,6 +525,11 @@ urlpatterns = [
                     name="contest_ranking",
                 ),
                 url(
+                    r"^/icpc-scoreboard/$",
+                    contests.ContestICPCScoreboard.as_view(),
+                    name="contest_icpc_scoreboard",
+                ),
+                url(
                     r"^/ranking/ajax$",
                     contests.contest_ranking_ajax,
                     name="contest_ranking_ajax",

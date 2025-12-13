@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}{{ contest.name }} – {{ _('ICPC Scoreboard') }}{% endblock %}
+
+{% block media %}
+    {{ super() }}
+    <style>
+        .icpc-scoreboard-table table {
+            margin-bottom: 0;
+        }
+
+        .icpc-scoreboard-table th,
+        .icpc-scoreboard-table td {
+            vertical-align: middle !important;
+        }
+
+        .icpc-display-name {
+            font-weight: 700;
+            font-size: 1.05em;
+        }
+
+        .icpc-problem-cell {
+            min-width: 70px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="page-header">
+            <h1>{{ contest.name }} <small>{{ _('ICPC Scoreboard') }}</small></h1>
+            <p class="text-muted">
+                {% if is_public_view %}
+                    {{ _('This ICPC scoreboard is public, as enabled by an administrator.') }}
+                {% else %}
+                    {{ _('This ICPC scoreboard is only visible to contest staff and authorized viewers.') }}
+                {% endif %}
+            </p>
+        </div>
+
+        {% if scoreboard_hidden %}
+            <div class="alert alert-info">{{ _('Scoreboard is currently hidden for this contest.') }}</div>
+        {% elif not rows %}
+            <div class="alert alert-info">{{ _('No participants have been ranked yet.') }}</div>
+        {% else %}
+            <div class="table-responsive icpc-scoreboard-table">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 25%;">{{ _('Team') }}</th>
+                            <th style="width: 10%;" class="text-center">{{ _('Result') }}</th>
+                            {% for problem in problems %}
+                                <th class="text-center icpc-problem-cell"
+                                    title="{{ problem.problem.name }}">{{ contest.get_label_for_problem(loop.index0) }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                            <tr>
+                                <td>{{ row.rank }}</td>
+                                <td>
+                                    <div class="icpc-display-name">{{ row.display_name }}</div>
+                                    {% if row.username and row.username != row.display_name %}
+                                        <div class="text-muted small">@{{ row.username }}</div>
+                                    {% endif %}
+                                    {% if row.organization %}
+                                        <div class="text-muted small">
+                                            {{ row.organization.short_name or row.organization.name }}
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">{{ row.result|safe }}</td>
+                                {% for cell in row.problem_cells %}
+                                    <td class="text-center icpc-problem-cell">{{ cell|safe }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
